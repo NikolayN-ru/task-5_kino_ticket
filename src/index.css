@@ -11,3 +11,63 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.day {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.day:hover {
+}
+
+.time {
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  width: 50px;
+}
+.time:hover {
+}
+
+
+
+.active {
+  color: red;
+}
+
+.time-container {
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+.time-container:hover {
+  background-color: blueviolet;
+  opacity: 0.5;
+}
+
+.time-container:active {
+  background-color: orange;
+}
+
+.time-lost {
+  padding: 10px;
+
+}
+
+.Action > button {
+  padding: 20px;
+  margin: 20px;
+}
+
+button > span {
+  color: red;
+}
+
+.my {
+  padding: 5px;
+  background-color: rgb(40, 121, 162);
+  color: rgb(233, 242, 232)
+}
