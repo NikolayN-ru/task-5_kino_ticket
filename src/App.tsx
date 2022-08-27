@@ -1,48 +1,56 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Day from './components/Day';
 
-interface Istate { }
-
-const fultime: any[] = []
+const fultime: any[] = [];
 const hours = [10, 12, 14, 15, 16, 17, 18, 19, 20];
 const now = new Date();
 const day = now.getDate()
 const days = [day]
-function* generateSequence(i: number, end: number) {
+function* generateSequence(i: number, end: number): Generator<number> {
   for (i; i <= end; i++) {
     const currentDay = (i: any) => {
-      if (i > 31) {
-        return i - 31
-      }
+      if (i > 31) return i - 31;
       return i;
     }
-    days.unshift(days[0] - 1)
-    days.push(currentDay(days[days.length - 1] + 1))
+    days.unshift(days[0] - 1);
+    days.push(currentDay(days[days.length - 1] + 1));
   }
-  yield 1
+  yield 1;
   for (let item in days) {
     fultime.push({ days: days[item], hour: hours, broned: [], myBroned: [], block: days[item] >= day ? false : true });
     for (let key in hours) {
       let rand = Math.random()
-      if (rand > 0.9) {
-        fultime[fultime.length - 1].broned.push(hours[key])
-      }
+      if (rand > 0.9) fultime[fultime.length - 1].broned.push(hours[key])
     }
   }
 }
 
-let generator = generateSequence(1, 7);
+let generator: Generator<number, number> = generateSequence(1, 7);
 generator.next();
 generator.next();
-const initialState: any[] = fultime;
+
+interface Istate {
+  days: number;
+  hour: number[];
+  block: boolean;
+  broned: number[];
+  myBroned: number[];
+}
+
+interface Iaction {
+  day: number | any;
+  hour: number;
+  id: number;
+}
+
+const initialState: Istate[] = fultime;
 
 function App() {
-  const [state, setState] = useState<Array<any>>(initialState);
-  const [action, setAction] = useState<any | null>(null);
-  const [newArr, setNewArr] = useState<any>();
-  const clickKino = (day: any, hour: any, id: any) => {
-    setAction({ day: day, hour: hour, id });
+  const [state, setState] = useState<Array<Istate>>(initialState);
+  const [action, setAction] = useState<Iaction | null | any>(null);
+  const [newArr, setNewArr] = useState<Array<string>>();
+  const clickKino = (day: number, hour: number, id: number): void => {
+    setAction({ day, hour: hour, id });
   }
 
   const broned = () => {
@@ -65,9 +73,7 @@ function App() {
         let a = newArr[0].split("-");
         for (let q = 0; q < state.length; q++) {
           state[q].myBroned = [];
-          if (q === Number(a[0])) {
-            state[q].myBroned.push(Number(a[1]));
-          }
+          if (q === Number(a[0])) state[q].myBroned.push(Number(a[1]));
         }
       }
     }
@@ -89,7 +95,7 @@ function App() {
                       onClick={() => clickKino(item.days, hour, id)}
                       key={hour}
                       className={(item.days < day) ? "time-lost" : "time-container"}
-                      disabled={(item.days < day && item.days > 7 || (item.broned.includes(hour))) ? true : false}
+                      disabled={(id < 7 || (item.broned.includes(hour))) ? true : false}
                     >
                       {item.myBroned.includes(hour) ? <span className="my">MY</span> :
                         !item.broned.includes(hour) ? hour : <span>BAN</span>
@@ -104,7 +110,8 @@ function App() {
       </div>
       {action &&
         <div className="Action">
-          поддтвердите дату - {action.day} - число - {action.hour} часов 00 минут
+          <p>Поддтвердите дату:</p>
+          Вы бронируете || {action.day} день || {action.hour} часов 00 минут.
           <button onClick={() => broned()}>DA</button>
           <button onClick={() => setAction(null)}>NET</button>
         </div>
